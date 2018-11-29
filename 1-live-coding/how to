@@ -1,0 +1,34 @@
+
+PART I: LIVE CODING
+
+1) This part is mostly about running the .TAP file with the zx spectrum emulator "fbzx"
+
+2) Open fbzx
+
+3) Before loading the TAP, disable all options at the menu TAP/TZX in fbzx
+
+4) Load the .TAP file
+
+5) F9 to fullscreen
+
+6) Load the program at the Zx Spectrum Emulator: J + Crtl P + Ctrl P + Enter
+
+7) From terminal it is possible to run as "fbzx -fs image.tap"
+
+
+*** How to create new TAPs ***
+
+- Run the software ImagetoZxSpec loading the photos you prefer
+
+
+*** How to edit a TAP ***
+
+- run with Wine ZxEditor
+
+- open a TAP
+
+- in File -> Toggle file list display
+
+- Select PROGR -> (en el símbolo del cubo con lápiz) modify name
+
+
