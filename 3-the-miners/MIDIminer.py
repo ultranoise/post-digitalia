@@ -94,7 +94,10 @@ def audio():
 ##################################
 ##### MINER ~~~############
 ##################################
-
+####
+##### MINER forked from "miniminer" by
+##### Martin Nadal muimota.net
+##################################
 def mine():
 
     global nonceInfo
