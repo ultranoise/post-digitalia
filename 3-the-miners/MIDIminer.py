@@ -241,6 +241,27 @@ def transactions():
             print("block")
             print(result['x'])
 
+#################
+### midi setup
+#################
+
+def print_ports(heading, port_names):
+    print(heading)
+    for name in port_names:
+        print("    '{}'".format(name))
+    print()
+
+
+#########################
+##### MIDI PLAYER #######
+#########################
+def playmm():
+
+    midd = mido.MidiFile('the-miners3.midi')
+
+    for msgg in midd.play():
+        port.send(msgg)      #para que no se retrase hay que hacer lo siguiente en paralelo
+
 
 #################
 ### midi setup
@@ -263,9 +284,10 @@ def playm():
     global lastsave2
     global MIDImsg
 
-    mid = mido.MidiFile('samba.mid')
+    mid = mido.MidiFile('the-miners3.midi')
+
     for msg in mid.play():
-        port.send(msg)      #para que no se retrase hay que hacer lo siguiente en paralelo
+        #port.send(msg)      #para que no se retrase hay que hacer lo siguiente en paralelo
         if msg.type == 'note_on':
             #MINE!
             threading.Thread(target=mine).start()
@@ -274,18 +296,19 @@ def playm():
             MIDImsg = '{}'.format(msg)
 
             #add a counter notes per second to check this works
-            if time.time() - lastsave > 2:
-                # this is in seconds, so 5 minutes = 300 seconds
-                lastsave = time.time()
-                notecounter = 0
-            else:
-                notecounter = notecounter + 1
+            #if time.time() - lastsave > 2:
+            #    # this is in seconds, so 5 minutes = 300 seconds
+            #    lastsave = time.time()
+            #    notecounter = 0
+            #else:
 
-            if time.time() - lastsave2 > 15:
-                lastsave2 = time.time()
+            notecounter = notecounter + 1
+
+            #if time.time() - lastsave2 > 905:
+            #    lastsave2 = time.time()
                 #print("UDATE")
                 #UPDATE BITCOIN INFO!
-                threading.Thread(target=updateBitcoin).start()
+                #threading.Thread(target=updateBitcoin).start()
             #print("note-on nr: ", notecounter)
 
 
@@ -335,15 +358,15 @@ def cambia():
 bitcoinInfoData
 
 def getNrNotes():
-    ast = ' '
-    ast = '*' * notecounter
-    return 'Musical notes played per second ({})'.format(notecounter) + '   ' + ast
+    #ast = ' '
+    #ast = '*' * notecounter
+    return 'Musical notes played/mined ({})'.format(notecounter) #+ '   ' + ast
 
 def getMIDImsg():
-    return 'Musician played: ' + MIDImsg[17:38]
+    return 'Mining info (terminal refresh rate 0.8 secs): '# + MIDImsg[17:26] + ' velocity (average) = ' + '{}'.format(randint(80,90))
 
 def getBlockCount():
-    return 'Block Count: ' + blockCount
+    return 'Block Number: ' + blockCount
 
 def getBitcoinInfoData1():
     t = '{}'.format(bitcoinInfoData)
@@ -387,7 +410,7 @@ def getNonce():
     return 'Mining Nonce: ' + nonceInfo
 
 def getHash():
-    return 'Mining Hash: ' + hashInfo
+    return 'Returned Hash: ' + hashInfo
 
 def getTarget():
     return 'Mining Target: ' + targetInfo
@@ -484,8 +507,8 @@ def demo(screen):
 
         #screen.print_at(getTime(), 80, 32, COLOUR_GREEN, A_BOLD)
 
-        screen.print_at(getNrNotes(), 8, 20, COLOUR_GREEN, A_BOLD)
-        screen.print_at(getMIDImsg(), 8, 22, COLOUR_GREEN, A_BOLD)
+        screen.print_at(getNrNotes(), 8, 18, COLOUR_GREEN, A_BOLD)
+        screen.print_at(getMIDImsg(), 8, 22, COLOUR_GREEN, A_REVERSE)
 
         screen.print_at(getNonce(), 8, 24, COLOUR_GREEN, A_BOLD)
         screen.print_at(getBlockHeader1(), 8, 26, COLOUR_GREEN, A_BOLD)
@@ -500,9 +523,13 @@ def demo(screen):
         screen.refresh()
 
         #sleep(delayRate)
+        sleep(0.8)
 
 
-
+def on_screen_ready(screen):
+    from threading import Thread
+    ui_thread = Thread(target=demo, args=(screen,))
+    ui_thread.start()
 
 
 ### MAIN PROGRAM ######
@@ -528,8 +555,42 @@ threading.Thread(target=updateBitcoin).start()
 #parallel processes
 #threading.Thread(target=transactions).start()
 threading.Thread(target=footprintCalculator).start()
-threading.Thread(target=playm).start()
-threading.Thread(target=audio).start()
+
 
 ##screen management
-Screen.wrapper(demo)
+Screen.wrapper(on_screen_ready)
+
+midd = mido.MidiFile('the-miners2.midi')
+
+midd.play()
+
+
+for msgg in midd.play():
+    port.send(msgg)
+    if msgg.type == 'note_on':
+        #MINE!
+        threading.Thread(target=mine).start()
+
+        #print(msg)
+        MIDImsg = '{}'.format(msgg)
+
+        #add a counter notes per second to check this works
+        #if time.time() - lastsave > 2:
+        #    # this is in seconds, so 5 minutes = 300 seconds
+        #    lastsave = time.time()
+        #    notecounter = 0
+        #else:
+
+        notecounter = notecounter + 1
+
+        #if time.time() - lastsave2 > 905:
+        #    lastsave2 = time.time()
+            #print("UDATE")
+            #UPDATE BITCOIN INFO!
+            #threading.Thread(target=updateBitcoin).start()
+        #print("note-on nr: ", notecounter)
+
+
+sleep(10)
+
+
