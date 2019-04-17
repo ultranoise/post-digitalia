@@ -1,4 +1,4 @@
-third part of postdigital
+third part of postdigital by enrique tomás
 
 how to play this:
 - 1) run the python script intro
